@@ -1,3 +1,4 @@
+// sketch.js
 let soundClassifier;
 let label = "waiting...";
 let violinImg, celloImg, fluteImg, clarinetImg, pianoImg;
@@ -15,6 +16,13 @@ function preload() {
 function setup() {
   createCanvas(640, 520);
   soundClassifier.classify(gotResults);
+  
+  // Resize the images
+  violinImg.resize(640, 520);
+  celloImg.resize(640, 520);
+  fluteImg.resize(640, 520);
+  clarinetImg.resize(640, 520);
+  pianoImg.resize(640, 520);
 }
 
 function draw() {
@@ -38,7 +46,7 @@ function draw() {
   }
 
   if (imageToShow) {
-    image(imageToShow, width / 2 - imageToShow.width / 2, height / 2 - imageToShow.height / 2);
+    image(imageToShow, 0, 0);
   }
 }
 
