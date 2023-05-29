@@ -1,10 +1,16 @@
 // sketch.js
 let soundClassifier;
 let label = "waiting...";
+let violinImg, celloImg, fluteImg, clarinetImg, pianoImg;
 
 function preload() {
   const modelURL = 'https://teachablemachine.withgoogle.com/models/0DFbqdqVs/';
   soundClassifier = ml5.soundClassifier(modelURL + 'model.json');
+  violinImg = loadImage('violin.png');
+  celloImg = loadImage('cello.png');
+  fluteImg = loadImage('flute.png');
+  clarinetImg = loadImage('clarinet.png');
+  pianoImg = loadImage('piano.png');
 }
 
 function setup() {
@@ -18,6 +24,23 @@ function draw() {
   textAlign(CENTER, CENTER);
   fill(255);
   text(label, width / 2, height - 16);
+
+  let imageToShow;
+  if (label === "violin") {
+    imageToShow = violinImg;
+  } else if (label === "cello") {
+    imageToShow = celloImg;
+  } else if (label === "flute") {
+    imageToShow = fluteImg;
+  } else if (label === "clarinet") {
+    imageToShow = clarinetImg;
+  } else if (label === "piano") {
+    imageToShow = pianoImg;
+  }
+
+  if (imageToShow) {
+    image(imageToShow, width / 2 - imageToShow.width / 2, height / 2 - imageToShow.height / 2);
+  }
 }
 
 function gotResults(error, results) {
@@ -27,20 +50,4 @@ function gotResults(error, results) {
   }
   label = results[0].label;
   soundClassifier.classify(gotResults);
-
-  let emoji = "🚂";
-  if (label === "violin") {
-    emoji = "🌈";
-  } else if (label === "cello") {
-    emoji = "🦄";
-  } else if (label === "flute") {
-    emoji = "🔈";
-  } else if (label === "clarinet") {
-    emoji = "🎸";
-  } else if (label === "piano") {
-    emoji = "🎹";
-  }
-
-  textSize(256);
-  text(emoji, width / 2, height / 2);
 }
