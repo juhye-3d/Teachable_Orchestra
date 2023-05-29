@@ -1,4 +1,3 @@
-// sketch.js
 let soundClassifier;
 let label = "waiting...";
 let violinImg, celloImg, fluteImg, clarinetImg, pianoImg;
