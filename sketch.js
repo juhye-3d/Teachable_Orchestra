@@ -83,7 +83,6 @@ function gotResults(error, results) {
 
         // Stop the recognition in 5 seconds.
         // setTimeout(() => recognizer.stopListening(), 5000);
-    }
 
         
    
