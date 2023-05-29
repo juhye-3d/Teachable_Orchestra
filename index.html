@@ -43,9 +43,41 @@
         // listen() takes two arguments:
         // 1. A callback function that is invoked anytime a word is recognized.
         // 2. A configuration object with adjustable fields
-        recognizer.listen(result => {
-            const scores = result.scores; // probability of prediction for each class
-            if(prediction[0].className=="배경소음"&&prediction[0].probability.toFixed(2)==1.00)
+        recognizer.listen(result => {            
+            // render the probability scores per class
+           // for (let i = 0; i < classLabels.length; i++) {
+           //     const classPrediction = classLabels[i] + ": " + result.scores[i].toFixed(2);
+           //     labelContainer.childNodes[i].innerHTML = classPrediction;
+           // }
+        }, {
+            includeSpectrogram: true, // in case listen should return result.spectrogram
+            probabilityThreshold: 0.75,
+            invokeCallbackOnNoiseAndUnknown: true,
+            overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
+        });
+
+        // Stop the recognition in 5 seconds.
+        // setTimeout(() => recognizer.stopListening(), 5000);
+    }
+
+        
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
+        }
+    }
+
+    async function loop(timestamp) {
+       
+        await predict();
+        window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+        // Prediction #1: run input through posenet
+        // estimatePose can take in an image, video or canvas html element
+        const prediction = await model.predict(posenetOutput);
+
+         if(prediction[0].className=="배경소음"&&prediction[0].probability.toFixed(2)==1.00)
         {
             labelContainer.childNodes[0].innerHTML="배경소음"
         }
@@ -86,88 +118,21 @@
             labelContainer.childNodes[9].innerHTML="base drum"
         }
         else{ labelContainer.childNodes[0].innerHTML="알수없음" }
-            
-            
-            
-            
-            
-            
-            
-            // render the probability scores per class
-           // for (let i = 0; i < classLabels.length; i++) {
-           //     const classPrediction = classLabels[i] + ": " + result.scores[i].toFixed(2);
-           //     labelContainer.childNodes[i].innerHTML = classPrediction;
-           // }
-        }, {
-            includeSpectrogram: true, // in case listen should return result.spectrogram
-            probabilityThreshold: 0.75,
-            invokeCallbackOnNoiseAndUnknown: true,
-            overlapFactor: 0.50 // probably want between 0.5 and 0.75. More info in README
-        });
-
-        // Stop the recognition in 5 seconds.
-        // setTimeout(() => recognizer.stopListening(), 5000);
-    }
-</script>
-
-    /*        
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
-    }
-
-    async function loop(timestamp) {
-        webcam.update(); // update the webcam frame
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    async function predict() {
-        // Prediction #1: run input through posenet
-        // estimatePose can take in an image, video or canvas html element
-        const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
-        // Prediction 2: run input through teachable machine classification model
-        const prediction = await model.predict(posenetOutput);
-
-        if(prediction[0].className=="깍지끼고스트레칭"&&prediction[0].probability.toFixed(2)==1.00)
-        {
-            labelContainer.childNodes[0].innerHTML="깍지끼고스트레칭"
-        }
-        else if(prediction[1].className=="앉았다일어서기"&&prediction[1].probability.toFixed(2)==1.00)
-        {
-            labelContainer.childNodes[1].innerHTML="앉았다일어서기"
-        }
-        else if(prediction[2].className=="허리스트레칭"&&prediction[2].probability.toFixed(2)==1.00)
-        {
-            labelContainer.childNodes[2].innerHTML="허리스트레칭"
-        }
-        else{ labelContainer.childNodes[0].innerHTML="알수없음" }
         
         
-        for (let i = 0; i < maxPredictions; i++) 
+     /*  for (let i = 0; i < maxPredictions; i++) 
         {
             const classPrediction =
                 prediction[i].className + ": " + prediction[i].probability.toFixed(2);
            labelContainer.childNodes[i].innerHTML = classPrediction;
-       }
+       }*/
 
-        // finally draw the poses
-        drawPose(pose);
+   
     }
 
-    function drawPose(pose) {
-        if (webcam.canvas) {
-            ctx.drawImage(webcam.canvas, 0, 0);
-            // draw the keypoints and skeleton
-            if (pose) {
-                const minPartConfidence = 0.5;
-                tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-                tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-            }
-        }
-    }
+ 
 
-*/
+</script>
 
 
 
